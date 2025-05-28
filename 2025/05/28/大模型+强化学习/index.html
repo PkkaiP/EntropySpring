@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    
+    <link rel="apple-touch-icon" sizes="76x76" href="/EntropySpring/null">
+    <link rel="icon" type="image/png" href="/EntropySpring/null">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <title>大模型+强化学习调研 - Hexo</title>
+    
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
+    
+    <meta name="description" content="">
+    <meta name="author" content="EntoryString">
+    <meta name="keywords" content="">
+    <meta property="og:title" content="大模型+强化学习调研"/>
+    <style>
+
+
+    
+    :root{
+        --shadow-color: rgba(0,0,0,0.2);
+        --sec-shadow: rgba(0,0,0,0.03);
+        --shadow-hover-color: rgba(0,0,0,0.28);
+        --first-text-color: #475b6d;
+        --second-text-color: #37475b;
+        --third-text-color: #858585;
+        --default-text-color: #505050;
+        --default-link-color: #007bff;
+        --link-color: #000000;
+        --second-link-color: #4F9BFA;
+        --code-color:rgba(27,31,35,.05);
+        --post-bkg-color: #fff;
+        --page-bkg-color: #f2f5f8;
+        --nav-a-hover-color: #3498db;
+        --post-sec-text-color: #718096;
+        --sec-bkg: #f2f5f8;
+        --color-mode: 'light';
+        --bkg-h: rgba(255,255,255,0.6);
+        --bkg-m: #e1e4e8;
+        --home-title-color: #4169E1;
+        --shadow: 0 4px 10px rgba(0,2,4,0.06),0 0 1px rgba(0,2,4,0.11);
+        --hr-color: #ddd;
+        --bg-t: #f4f4f4;
+        --nav-bkg: rgba(255,255,255,0.6);
+    }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-mode: 'dark';
+  }
+
+  :root:not([data-theme]) {
+    --first-text-color: hsla(0,0%,100%,0.92);
+    --second-text-color: hsla(0,0%,100%,0.86);
+    --third-text-color: #a7a9ad;
+    --default-text-color: #505050;
+    --default-link-color: #1589e9;
+    --link-color: #000000;
+    --second-link-color: #30a9de;
+    --post-bkg-color: #252d38;
+    --page-bkg-color: #181c27;
+    --nav-a-hover-color: #3498db;
+    --post-sec-text-color: #a7a9ad;
+    --sec-bkg: #364151;
+    --bkg-h: rgba(255,255,255,0.2);
+    --bkg-m: rgba(255,255,255,0.1);
+    --home-title-color: rgb(226, 82, 90);
+    --code-color:#3e4b5e;
+    --shadow: none;
+    --hr-color: #718096;
+    --bg-t: #364151;
+    --nav-bkg: rgba(13,17,23,0.6);
+  }
+}
+
+[data-theme='dark'] {
+    --shadow-color: rgba(0,0,0,0.2);
+    --shadow-hover-color: rgba(0,0,0,0.28);
+    --first-text-color: hsla(0,0%,100%,0.92);
+    --second-text-color: hsla(0,0%,100%,0.86);
+    --third-text-color: #a7a9ad;
+    --default-text-color: #505050;
+    --default-link-color: #1589e9;
+    --link-color: #000000;
+    --second-link-color: #30a9de;
+    --post-bkg-color: #252d38;
+    --page-bkg-color: #181c27;
+    --nav-a-hover-color: #3498db;
+    --post-sec-text-color: #a7a9ad;
+    --sec-bkg: #364151;
+    --bkg-h: rgba(255,255,255,0.2);
+    --bkg-m: rgba(255,255,255,0.1);
+    --home-title-color: rgb(226, 82, 90);
+    --code-color:#3e4b5e;
+    --shadow: none;
+    --hr-color: #718096;
+    --bg-t: #364151;
+    --nav-bkg: rgba(13,17,23,0.6);
+}
+
+</style>
+
+
+
+<style>
+#page-main,footer,.p-btn{
+    display: none;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+body {
+    background-color: var(--page-bkg-color);
+    color: var(--second-text-color);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    transition: all .3s;
+}
+a {
+    color: var(--default-link-color);
+    text-decoration: none;
+    background-color: transparent;
+}
+a:hover{
+    color: var(--second-link-color);
+}
+.main-content,.post-card-main{
+    margin: 30px;
+}
+
+
+
+@media (max-width: 410px){
+    .post-card-main{
+        max-width: 350px!important;
+    }
+}
+
+@media (max-width: 980px){
+    .post-card-main{
+        max-width: 520px!important;
+    }
+}
+
+
+@media (min-width: 780px){ 
+    h3{
+        font-size: 1.5rem;
+        line-height: 1.5em;
+    }
+}
+@media (min-width: 1280px){ 
+    h3{
+        font-size: 1.7rem;
+        line-height: 1.5em;
+    }
+}
+@media (min-width: 2096px){ 
+    h3{
+        font-size: 1.8rem;
+        line-height: 1.5em;
+    }
+}
+
+.text-center{
+    text-align: center!important;
+}
+.middle-center{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 100%;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    height: 54px;
+    padding: 0 1.25rem;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--bkg-m);
+    background-color: var(--nav-bkg);
+    backdrop-filter: blur(4px);
+    transition: all .3s;
+}
+header .header__left, header .header__right {
+    display: flex;
+    align-items: center;
+    font-family: rubik,sans-serif,Varela Round;
+}
+header .header__left .logo__text {
+    font-size: 18px;
+    font-weight: 450;
+    padding: 14.5px 10px;
+    border-radius: 5px;
+    color: var(--second-text-color);
+}
+header .header__right .navbar__menus {
+    height: 54px;
+    padding: 0 0 0 15px;
+}
+header .header__right .button {
+    color: var(--second-text-color);
+}
+header .header__right .navbar__menus .navbar-menu {
+    display: inline-block;
+    align-items: center;
+    height: 54px;
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 54px;
+}
+header .header__right .dropdown-icon {
+    display: none;
+    height: 54px;
+    padding: 15px 10px;
+    border: 0;
+    background-color: transparent;
+}
+header .header__right .dropdown-menus {
+    line-height: 2rem;
+    animation: slide-in .15s ease 1;
+    display: none;
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: calc(54px + 10px);
+    border-radius: 6px;
+    padding: 24px;
+    background-color: var(--page-bkg-color);
+    border: 1px solid var(--bkg-m);
+    z-index: 9999;
+    justify-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+header .header__right #btn-search, header .header__right #btn-toggle-dark{
+    display: inline-block;
+    padding:  18px 10px;
+    height: 25px;
+}
+header .header__right #btn-dropdown{
+  display: inline-block;
+  padding:  13.5px 0;
+}
+header .header__right .dropdown-menus .dropdown-menu {
+    padding: 10px;
+    color: var(--second-text-color);
+}
+@media screen and (max-width: 764px){
+.navbar__menus {
+    display: none!important;
+}
+.dropdown-icon {
+    display: inline-block!important;
+}
+}
+.p-btn{
+    position: fixed;
+    bottom: 1.2rem;
+    right: 1.2rem;
+    contain: layout;
+}
+.toc-btn,.click-btn{
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    align-items: center;
+    margin-top: .5rem;
+    font-size: .75rem;
+    background-color: var(--sec-bkg);
+    display: block;
+    padding: 0.9rem;
+    box-shadow: 0 0.3rem 0.6rem rgba(48,55,66,.15);
+    border: none;
+    border-radius: 0.5rem;
+    line-height: 1;
+    color: var(--first-text-color);
+}
+.toc-link{
+    color: var(--second-text-color);
+}
+
+#css-loading h3{
+    font-weight: 500;
+    font-size: 1.4rem;
+    text-align: center;
+    position: fixed;
+    top: 200px;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    animation: cssLoad;
+    animation-delay: 0.3s;
+    -webkit-animation: cssLoad;
+    -webkit-animation-delay: 0.3s;
+}
+@keyframes cssLoad {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.9;
+    }
+}
+
+
+.memorial {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); filter:gray;
+}
+
+
+    .post-copyright:after {
+        position: absolute;
+        color: #fff;
+        background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 496 512'%3E%3Cpath fill='gray' d='M245.8 214.9l-33.2 17.3c-9.4-19.6-25.2-20-27.4-20-22.2 0-33.3 14.6-33.3 43.9 0 23.5 9.2 43.8 33.3 43.8 14.4 0 24.6-7 30.5-21.3l30.6 15.5a73.2 73.2 0 01-65.1 39c-22.6 0-74-10.3-74-77 0-58.7 43-77 72.6-77 30.8-.1 52.7 11.9 66 35.8zm143 0l-32.7 17.3c-9.5-19.8-25.7-20-27.9-20-22.1 0-33.2 14.6-33.2 43.9 0 23.5 9.2 43.8 33.2 43.8 14.5 0 24.7-7 30.5-21.3l31 15.5c-2 3.8-21.3 39-65 39-22.7 0-74-9.9-74-77 0-58.7 43-77 72.6-77C354 179 376 191 389 214.8zM247.7 8C104.7 8 0 123 0 256c0 138.4 113.6 248 247.6 248C377.5 504 496 403 496 256 496 118 389.4 8 247.6 8zm.8 450.8c-112.5 0-203.7-93-203.7-202.8 0-105.5 85.5-203.3 203.8-203.3A201.7 201.7 0 01451.3 256c0 121.7-99.7 202.9-202.9 202.9z'/%3E%3C/svg%3E");
+        content: ' ';
+        height: 10rem;
+        width: 10rem;
+        right: -2rem;
+        top: -2rem;
+        opacity: .1;
+    }
+
+</style>
+
+    
+
+    
+        <!--
+        <link rel="stylesheet" href="/EntropySpring/css/page.css" media="print"
+            onload="this.media='all';this.onload=null">
+        <noscript>-->
+            <link rel="stylesheet" href="/EntropySpring/css/page.css">
+        <!--</noscript>-->
+    
+    
+    <link rel="stylesheet" href="/EntropySpring/css/main.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/EntropySpring/css/main.css">
+    </noscript>
+
+    
+    <script src="/EntropySpring/js/main.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <header>
+            
+<div class="header__left">
+	<a href="/EntropySpring/" class="button"><span class="logo__text">EntoryString</span></a>
+</div>
+<div class="header__right">
+	<div class="navbar__menus">
+		
+	</div>
+	
+	<a href="/search/" class="button">
+		<div id="btn-search">
+			<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1024 1024" width="24" height="24" fill="currentColor"
+				stroke="currentColor" stroke-width="32">
+				<path
+					d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z">
+				</path>
+			</svg>
+		</div>
+	</a>
+	
+	<a href="javaScript:void(0);" class="button" id="btn-toggle-dark">
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+			</svg>
+		</div>
+	</a>
+	<a href="javaScript:void(0);" class="dropdown-icon button">
+		<div id="btn-dropdown">
+			<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1024 1024" width="24" height="24" fill="currentColor"
+				stroke="currentColor" stroke-width="32" stroke-linecap="round">
+				<path
+					d="M903.43 561.52H148.8c-13.25 0-24-10.75-24-24s10.75-24 24-24h754.63c13.25 0 24 10.75 24 24s-10.75 24-24 24zM903.43 204.31H148.8c-13.25 0-24-10.75-24-24s10.75-24 24-24h754.63c13.25 0 24 10.75 24 24s-10.75 24-24 24zM903.43 918.73H148.8c-13.25 0-24-10.75-24-24s10.75-24 24-24h754.63c13.25 0 24 10.75 24 24s-10.75 24-24 24z"
+					fill="currentColor"></path>
+			</svg>
+		</div>
+	</a>
+	<div class="dropdown-menus" id="dropdown-menus">
+		
+	</div>
+</div>
+
+        </header>
+        <div id="top"></div>
+        <div id="page-main" class="main-content">
+        <div class="mg-top">
+            
+
+<article class="page">
+<div id="post-meta-m">
+    <div class="post-meta" id="post-meta">
+  <h3>大模型+强化学习调研</h3>
+    
+      <span class="post-meta-label">
+        EntoryString
+      </span>
+    
+    
+      <span class="post-meta-label">
+        <span class="p-dot"></span>
+        <time datetime="2025-05-28 14:33" pubdate>
+          2025-05-28
+        </time>
+      </span>
+    
+    
+      
+      <span class="post-meta">
+        <span class="p-dot"></span>
+        共 5.5k 字
+      </span>
+    
+    
+    
+  </div>
+  
+</div>
+<div class="article-m">
+  <div class="post-toc">
+    
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E8%B0%83%E7%A0%94"><span class="toc-number">1.</span> <span class="toc-text">大模型+强化学习调研</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RLHF"><span class="toc-number">1.1.</span> <span class="toc-text">RLHF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RLAIF"><span class="toc-number">1.2.</span> <span class="toc-text">RLAIF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SPO"><span class="toc-number">1.3.</span> <span class="toc-text">SPO</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LLM-enhanced-RL"><span class="toc-number">2.</span> <span class="toc-text">LLM-enhanced RL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM%E4%BD%9C%E4%B8%BA%E4%BF%A1%E6%81%AF%E5%A4%84%E7%90%86%E8%80%85"><span class="toc-number">2.0.1.</span> <span class="toc-text">LLM作为信息处理者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM%E4%BD%9C%E4%B8%BA%E5%A5%96%E5%8A%B1%E8%AE%BE%E8%AE%A1%E8%80%85"><span class="toc-number">2.0.2.</span> <span class="toc-text">LLM作为奖励设计者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM%E4%BD%9C%E4%B8%BA%E5%86%B3%E7%AD%96%E8%80%85"><span class="toc-number">2.0.3.</span> <span class="toc-text">LLM作为决策者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM%E4%BD%9C%E4%B8%BA%E7%94%9F%E6%88%90%E8%80%85"><span class="toc-number">2.0.4.</span> <span class="toc-text">LLM作为生成者</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">3.</span> <span class="toc-text">强化学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Deepseek%E5%BE%AE%E8%B0%83-SFT"><span class="toc-number">4.</span> <span class="toc-text">Deepseek微调(SFT)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#conda%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">4.1.</span> <span class="toc-text">conda环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-number">4.1.1.</span> <span class="toc-text">报错与解决</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deepseek%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E4%B8%8B%E8%BD%BD"><span class="toc-number">4.2.</span> <span class="toc-text">deepseek预训练模型下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8B%E8%BD%BD"><span class="toc-number">4.3.</span> <span class="toc-text">数据集下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E8%B0%83%E8%AE%AD%E7%BB%83%E4%BB%A3%E7%A0%81"><span class="toc-number">4.4.</span> <span class="toc-text">微调训练代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%90%88%E5%B9%B6%E4%BB%A3%E7%A0%81"><span class="toc-number">4.5.</span> <span class="toc-text">模型合并代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E7%90%86%E4%BB%A3%E7%A0%81"><span class="toc-number">4.6.</span> <span class="toc-text">推理代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-number">4.7.</span> <span class="toc-text">测试结果</span></a></li></ol></li></ol>
+    
+  </div>
+    <div id="article">
+      <div id="post-content" class="markdown-body textretty">
+        <h1 id="大模型-强化学习调研"><a href="#大模型-强化学习调研" class="headerlink" title="大模型+强化学习调研"></a>大模型+强化学习调研</h1><p>目前来看，大模型更擅长解决生成式的问题，但是对于决策性的问题，大模型的处理比较差，比如机器人导航转向就是一个决策性的问题。生成问题通常使用掩码来隐藏上下文信息，让模型通过上文生成下文，这是一种自监督方法；而决策问题通常需要一个明确的答案，如是或否、A&#x2F;B&#x2F;C 选项，因此需要使用有监督数据进行训练或微调模型。</p>
+<p>强化学习通过奖励函数直接或间接地为模型提供有监督的判定标准。因此，在大模型中引入强化学习可以提升其判断能力。</p>
+<h2 id="RLHF"><a href="#RLHF" class="headerlink" title="RLHF"></a>RLHF</h2><p>EN：Deep Reinforcement Learning from Human Preferences</p>
+<p>CH：从人类偏好中进行深度强化学习</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03741">论文链接</a></p>
+<p>机构：openai</p>
+<p>这种方法主要依赖于人类标注的偏好，即确定人类更倾向于接受机器人的 A 回答还是 B 回答。当时，大模型还未出现，这种方法被用于游戏和机器人环境中，旨在改进强化学习的算法。该算法的训练数据来自人类的标注，提供问题和两个选项，让人类选择更倾向于 A 或 B，或者两者都同样喜欢，或者无法做出判断，从而构建有监督的数据。</p>
+<p>后来出现了大模型，人们使用 RLHF 来训练这些大模型，以提升它们学习人类偏好的能力。</p>
+<h2 id="RLAIF"><a href="#RLAIF" class="headerlink" title="RLAIF"></a>RLAIF</h2><p>EN: RLAIF: Scaling Reinforcement Learning from Human Feedback with AI Feedback<br>CH: RLAIF：利用AI反馈扩展强化学习</p>
+<p><a target="_blank" rel="noopener" href="http://arxiv.org/abs/2309.00267v2">论文链接</a></p>
+<p>机构：Google Research</p>
+<p>通过机器自动标注偏好数据来减少人力成本，研究者使用 PaLM2 对偏好进行标注，并将训练奖励模型的标注学习与直接让模型给出 0-10 分进行了比较。</p>
+<p>传统的标注只是选择两个答案中哪个更好，并没有体现出好坏程度是 9:1 还是 6:4；而大模型有能力可以给出一定的分值。</p>
+<p>PaLM2：是谷歌开发的一种先进的大规模语言模型，PaLM 2的设计旨在提升多语言处理能力、逻辑推理能力和代码理解能力。</p>
+<h2 id="SPO"><a href="#SPO" class="headerlink" title="SPO"></a>SPO</h2><p>EN: A Minimaximalist Approach to Reinforcement Learning from Human Feedback<br>CH:  一种极简极大化的强化学习方法：来自人类反馈的学习</p>
+<p><a target="_blank" rel="noopener" href="http://arxiv.org/abs/2401.04056v1">论文链接</a></p>
+<p>机构：Google Research</p>
+<p>上述方法可能隐含着 A&gt;B、B&gt;C，可推出 A&gt;C 的逻辑，而实际上在石头剪刀布这类游戏中，A&gt;C 可能并不成立。</p>
+<p>该方法不再将选择 A 与 B 相比较，而是同时考虑选项 A 和其他多个方法（BCDE…），计算 A 在这些方法中的位置作为其相对客观分值，以更准确地学习选项的好坏，并做出更好的决策。</p>
+<h1 id="LLM-enhanced-RL"><a href="#LLM-enhanced-RL" class="headerlink" title="LLM-enhanced RL"></a>LLM-enhanced RL</h1><p>EN：Survey on Large Language Model-Enhanced Reinforcement Learning: Concept, Taxonomy, and Methods</p>
+<p>CH：大语言模型增强强化学习综述：概念、分类和方法</p>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00282">https://arxiv.org/abs/2404.00282</a></p>
+<h3 id="LLM作为信息处理者"><a href="#LLM作为信息处理者" class="headerlink" title="LLM作为信息处理者"></a>LLM作为信息处理者</h3><p>大模型为强化学习代理提取观测表征和规范语言，提高样本利用效率。</p>
+<h3 id="LLM作为奖励设计者"><a href="#LLM作为奖励设计者" class="headerlink" title="LLM作为奖励设计者"></a>LLM作为奖励设计者</h3><p>在复杂或无法量化的任务中，大模型利用知识和推理能力设计复杂奖励函数和生成奖励信号。</p>
+<h3 id="LLM作为决策者"><a href="#LLM作为决策者" class="headerlink" title="LLM作为决策者"></a>LLM作为决策者</h3><p>大模型直接生成动作或间接生成动作建议，提高强化学习探索效率。</p>
+<h3 id="LLM作为生成者"><a href="#LLM作为生成者" class="headerlink" title="LLM作为生成者"></a>LLM作为生成者</h3><p>大模型被用于：（1）作为高保真多模态世界模型减少现实世界学习成本及（2）生成代理行为的自然语言解释。</p>
+<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250106161452148.png" alt="image-20250106161452148"></p>
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250106161305016.png" alt="image-20250106161305016"></p>
+<p><img src="https://segmentfault.com/img/bVdahiP/view" alt="preview"></p>
+<p>DQN流程：</p>
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250106230821747.png" alt="image-20250106230821747"></p>
+<h1 id="Deepseek微调-SFT"><a href="#Deepseek微调-SFT" class="headerlink" title="Deepseek微调(SFT)"></a>Deepseek微调(SFT)</h1><p>参考网站：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shanren/p/18719435">https://www.cnblogs.com/shanren/p/18719435</a></p>
+<h2 id="conda环境配置"><a href="#conda环境配置" class="headerlink" title="conda环境配置"></a>conda环境配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">conda create -n deepseek python=3.10</span><br><span class="line">conda activate deepseek</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118</span></span><br><span class="line">conda install pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia</span><br><span class="line">pip install transformers==4.38.2 accelerate peft bitsandbytes swanlab pandas loguru datasets</span><br></pre></td></tr></table></figure>
+
+<h3 id="报错与解决"><a href="#报错与解决" class="headerlink" title="报错与解决"></a>报错与解决</h3><p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319184255358.png" alt="image-20250319184255358"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install numpy==<span class="number">1.26</span><span class="number">.4</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319184638435.png" alt="image-20250319184638435"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install peft==<span class="number">0.10</span><span class="number">.0</span> transformers==<span class="number">4.37</span><span class="number">.2</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319192108812.png" alt="image-20250319192108812"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip uninstall Pillow</span><br></pre></td></tr></table></figure>
+
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319192139847.png" alt="image-20250319192139847"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install accelerate==<span class="number">0.28</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319192307670.png" alt="image-20250319192307670"></p>
+<p>在运行之前可以先进行swanlab的安装，详细见<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45258632/article/details/144971398">blog</a></p>
+<h2 id="deepseek预训练模型下载"><a href="#deepseek预训练模型下载" class="headerlink" title="deepseek预训练模型下载"></a>deepseek预训练模型下载</h2><p>预训练采用deepseek-llm-7b-chat，huggingface<a target="_blank" rel="noopener" href="https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat/tree/main">地址</a></p>
+<p>其中，需要用到git lfs，在centos 8服务器上的安装方式无法采用命令行安装，可以下载源代码安装，首先从git lfs的github仓库中选择下载</p>
+<p><img src="/EntropySpring/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0.assets/image-20250319171519268.png" alt="image-20250319171519268"></p>
+<p>通过在服务器命令行中输入<code>uname -m</code>查询系统架构<code>x86_64</code>，选择Linux AMD64版本进行下载，解压完成后进入文件夹，执行<code>sudo ./install.sh</code>即可，验证是否成功安装可以使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[pengyi@localhost ~]$ git lfs install</span><br><span class="line">Git LFS initialized.</span><br></pre></td></tr></table></figure>
+
+<p>由于服务器无法连接外网问题，这里不使用命令行克隆，使用程序进行下载，下载代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> huggingface_hub <span class="keyword">import</span> snapshot_download</span><br><span class="line"></span><br><span class="line">model_id = <span class="string">&quot;deepseek-ai/deepseek-llm-7b-chat&quot;</span>  <span class="comment"># 模型 ID</span></span><br><span class="line">local_dir = <span class="string">&quot;./deepseek-llm-7b-chat&quot;</span>  <span class="comment"># 本地保存目录 (可选)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    snapshot_download(</span><br><span class="line">        repo_id=model_id,</span><br><span class="line">        local_dir=local_dir,</span><br><span class="line">        cache_dir=<span class="string">&quot;./.cache&quot;</span> <span class="comment"># 设置缓存目录 (可选)</span></span><br><span class="line">    )</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;模型 <span class="subst">&#123;model_id&#125;</span> 成功下载到 <span class="subst">&#123;local_dir&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;下载模型时出错: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;请检查你的网络连接和 HF_ENDPOINT 环境变量。&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;如果问题仍然存在，请尝试使用其他镜像站点或代理服务器。&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="数据集下载"><a href="#数据集下载" class="headerlink" title="数据集下载"></a>数据集下载</h2><p>github链接：<a target="_blank" rel="noopener" href="https://github.com/SmartFlowAI/EmoLLM.git">https://github.com/SmartFlowAI/EmoLLM.git</a></p>
+<p>下载其<code>datasets</code>文件夹即可。</p>
+<h2 id="微调训练代码"><a href="#微调训练代码" class="headerlink" title="微调训练代码"></a>微调训练代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> os.path <span class="keyword">import</span> join</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> Dataset</span><br><span class="line"><span class="keyword">from</span> loguru <span class="keyword">import</span> logger</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> (</span><br><span class="line">    TrainingArguments,</span><br><span class="line">    AutoModelForCausalLM,</span><br><span class="line">    Trainer,</span><br><span class="line">    DataCollatorForSeq2Seq,</span><br><span class="line">    AutoTokenizer,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> peft <span class="keyword">import</span> LoraConfig, get_peft_model, TaskType</span><br><span class="line"><span class="keyword">from</span> swanlab.integration.transformers <span class="keyword">import</span> SwanLabCallback</span><br><span class="line"><span class="keyword">import</span> bitsandbytes <span class="keyword">as</span> bnb</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.nn.parallel <span class="keyword">import</span> DistributedDataParallel <span class="keyword">as</span> DDP</span><br><span class="line"><span class="keyword">import</span> torch.distributed <span class="keyword">as</span> dist</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">configuration_parameter</span>():</span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">&quot;LoRA fine-tuning for deepseek model&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 模型路径相关参数</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--model_name_or_path&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;./deepseek-llm-7b-chat&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Path to the model directory downloaded locally&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--output_dir&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>,</span><br><span class="line">                        default=<span class="string">&quot;./deepseek-train-output/ruozhiba&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Directory to save the fine-tuned model and checkpoints&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 数据集路径</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--train_file&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;./datasets/ruozhiba_raw.jsonl&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Path to the training data file in JSONL format&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 训练超参数</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--num_train_epochs&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">2</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of training epochs&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--per_device_train_batch_size&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">4</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Batch size per device during training&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--gradient_accumulation_steps&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">16</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of updates steps to accumulate before performing a backward/update pass&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--learning_rate&quot;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">2e-4</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Learning rate for the optimizer&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--max_seq_length&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">2048</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Maximum sequence length for the input&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--logging_steps&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">1</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of steps between logging metrics&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--save_steps&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">200</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of steps between saving checkpoints&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--save_total_limit&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">1</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Maximum number of checkpoints to keep&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--lr_scheduler_type&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;constant_with_warmup&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Type of learning rate scheduler&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--warmup_steps&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">100</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of warmup steps for learning rate scheduler&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># LoRA 特定参数</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--lora_rank&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">64</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Rank of LoRA matrices&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--lora_alpha&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">16</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Alpha parameter for LoRA&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--lora_dropout&quot;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">0.05</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Dropout rate for LoRA&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 分布式训练参数</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--local_rank&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="built_in">int</span>(os.environ.get(<span class="string">&quot;LOCAL_RANK&quot;</span>, -<span class="number">1</span>)),</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Local rank for distributed training&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--distributed&quot;</span>, <span class="built_in">type</span>=<span class="built_in">bool</span>, default=<span class="literal">False</span>, <span class="built_in">help</span>=<span class="string">&quot;Enable distributed training&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 额外优化和硬件相关参数</span></span><br><span class="line">    parser.add_argument(<span class="string">&quot;--gradient_checkpointing&quot;</span>, <span class="built_in">type</span>=<span class="built_in">bool</span>, default=<span class="literal">True</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Enable gradient checkpointing to save memory&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--optim&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;adamw_torch&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Optimizer to use during training&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--train_mode&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;lora&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;lora or qlora&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--seed&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">42</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Random seed for reproducibility&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--fp16&quot;</span>, <span class="built_in">type</span>=<span class="built_in">bool</span>, default=<span class="literal">False</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Use mixed precision (FP16) training&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--report_to&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="literal">None</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Reporting tool for logging (e.g., tensorboard)&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--dataloader_num_workers&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">0</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Number of workers for data loading&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--save_strategy&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&quot;steps&quot;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Strategy for saving checkpoints (&#x27;steps&#x27;, &#x27;epoch&#x27;)&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--weight_decay&quot;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">0</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Weight decay for the optimizer&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--max_grad_norm&quot;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">1</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Maximum gradient norm for clipping&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--remove_unused_columns&quot;</span>, <span class="built_in">type</span>=<span class="built_in">bool</span>, default=<span class="literal">True</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;Remove unused columns from the dataset&quot;</span>)</span><br><span class="line"></span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    <span class="keyword">return</span> args</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">find_all_linear_names</span>(<span class="params">model, train_mode</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    找出所有全连接层，为所有全连接添加adapter</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> train_mode <span class="keyword">in</span> [<span class="string">&#x27;lora&#x27;</span>, <span class="string">&#x27;qlora&#x27;</span>]</span><br><span class="line">    cls = bnb.nn.Linear4bit <span class="keyword">if</span> train_mode == <span class="string">&#x27;qlora&#x27;</span> <span class="keyword">else</span> nn.Linear</span><br><span class="line">    lora_module_names = <span class="built_in">set</span>()</span><br><span class="line">    <span class="keyword">for</span> name, module <span class="keyword">in</span> model.named_modules():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(module, cls):</span><br><span class="line">            names = name.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">            lora_module_names.add(names[<span class="number">0</span>] <span class="keyword">if</span> <span class="built_in">len</span>(names) == <span class="number">1</span> <span class="keyword">else</span> names[-<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;lm_head&#x27;</span> <span class="keyword">in</span> lora_module_names:  <span class="comment"># needed for 16-bit</span></span><br><span class="line">        lora_module_names.remove(<span class="string">&#x27;lm_head&#x27;</span>)</span><br><span class="line">    lora_module_names = <span class="built_in">list</span>(lora_module_names)</span><br><span class="line">    logger.info(<span class="string">f&#x27;LoRA target module names: <span class="subst">&#123;lora_module_names&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> lora_module_names</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">setup_distributed</span>(<span class="params">args</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;初始化分布式环境&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> args.distributed:</span><br><span class="line">        <span class="keyword">if</span> args.local_rank == -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;未正确初始化 local_rank，请确保通过分布式启动脚本传递参数，例如 torchrun。&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 初始化分布式进程组</span></span><br><span class="line">        dist.init_process_group(backend=<span class="string">&quot;nccl&quot;</span>)</span><br><span class="line">        torch.cuda.set_device(args.local_rank)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;分布式训练已启用，Local rank: <span class="subst">&#123;args.local_rank&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;未启用分布式训练，单线程模式。&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载模型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">load_model</span>(<span class="params">args, train_dataset, data_collator</span>):</span><br><span class="line">    <span class="comment"># 初始化分布式环境</span></span><br><span class="line">    setup_distributed(args)</span><br><span class="line">    <span class="comment"># 自动分配设备</span></span><br><span class="line">    <span class="comment"># 加载模型</span></span><br><span class="line">    model_kwargs = &#123;</span><br><span class="line">        <span class="string">&quot;trust_remote_code&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;torch_dtype&quot;</span>: torch.float16 <span class="keyword">if</span> args.fp16 <span class="keyword">else</span> torch.bfloat16,</span><br><span class="line">        <span class="string">&quot;use_cache&quot;</span>: <span class="literal">False</span> <span class="keyword">if</span> args.gradient_checkpointing <span class="keyword">else</span> <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;device_map&quot;</span>: <span class="string">&quot;auto&quot;</span> <span class="keyword">if</span> <span class="keyword">not</span> args.distributed <span class="keyword">else</span> <span class="literal">None</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, **model_kwargs)</span><br><span class="line">    <span class="comment"># 用于确保模型的词嵌入层参与训练</span></span><br><span class="line">    model.enable_input_require_grads()</span><br><span class="line">    <span class="comment"># 将模型移动到正确设备</span></span><br><span class="line">    <span class="keyword">if</span> args.distributed:</span><br><span class="line">        model.to(args.local_rank)</span><br><span class="line">        model = DDP(model, device_ids=[args.local_rank], output_device=args.local_rank)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 哪些模块需要注入Lora参数</span></span><br><span class="line">    target_modules = find_all_linear_names(model.module <span class="keyword">if</span> <span class="built_in">isinstance</span>(model, DDP) <span class="keyword">else</span> model, args.train_mode)</span><br><span class="line">    <span class="comment"># lora参数设置</span></span><br><span class="line">    config = LoraConfig(</span><br><span class="line">        r=args.lora_rank,</span><br><span class="line">        lora_alpha=args.lora_alpha,</span><br><span class="line">        lora_dropout=args.lora_dropout,</span><br><span class="line">        bias=<span class="string">&quot;none&quot;</span>,</span><br><span class="line">        target_modules=target_modules,</span><br><span class="line">        task_type=TaskType.CAUSAL_LM,</span><br><span class="line">        inference_mode=<span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    )</span><br><span class="line">    use_bfloat16 = torch.cuda.is_bf16_supported()  <span class="comment"># 检查设备是否支持 bf16</span></span><br><span class="line">    <span class="comment"># 配置训练参数</span></span><br><span class="line">    train_args = TrainingArguments(</span><br><span class="line">        output_dir=args.output_dir,</span><br><span class="line">        per_device_train_batch_size=args.per_device_train_batch_size,</span><br><span class="line">        gradient_accumulation_steps=args.gradient_accumulation_steps,</span><br><span class="line">        logging_steps=args.logging_steps,</span><br><span class="line">        num_train_epochs=args.num_train_epochs,</span><br><span class="line">        save_steps=args.save_steps,</span><br><span class="line">        learning_rate=args.learning_rate,</span><br><span class="line">        save_on_each_node=<span class="literal">True</span>,</span><br><span class="line">        gradient_checkpointing=args.gradient_checkpointing,</span><br><span class="line">        report_to=args.report_to,</span><br><span class="line">        seed=args.seed,</span><br><span class="line">        optim=args.optim,</span><br><span class="line">        local_rank=args.local_rank <span class="keyword">if</span> args.distributed <span class="keyword">else</span> -<span class="number">1</span>,</span><br><span class="line">        ddp_find_unused_parameters=<span class="literal">False</span>,  <span class="comment"># 分布式参数检查优化</span></span><br><span class="line">        fp16=args.fp16,</span><br><span class="line">        bf16=<span class="keyword">not</span> args.fp16 <span class="keyword">and</span> use_bfloat16,</span><br><span class="line">        remove_unused_columns=<span class="literal">False</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># 应用 PEFT 配置到模型</span></span><br><span class="line">    model = get_peft_model(model.module <span class="keyword">if</span> <span class="built_in">isinstance</span>(model, DDP) <span class="keyword">else</span> model, config)  <span class="comment"># 确保传递的是原始模型</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;model:&quot;</span>, model)</span><br><span class="line">    model.print_trainable_parameters()</span><br><span class="line"></span><br><span class="line">    <span class="comment">### 展示平台</span></span><br><span class="line">    swanlab_config = &#123;</span><br><span class="line">        <span class="string">&quot;lora_rank&quot;</span>: args.lora_rank,</span><br><span class="line">        <span class="string">&quot;lora_alpha&quot;</span>: args.lora_alpha,</span><br><span class="line">        <span class="string">&quot;lora_dropout&quot;</span>: args.lora_dropout,</span><br><span class="line">        <span class="string">&quot;dataset&quot;</span>: <span class="string">&quot;single-data-3w&quot;</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    swanlab_callback = SwanLabCallback(</span><br><span class="line">        project=<span class="string">&quot;deepseek-finetune&quot;</span>,</span><br><span class="line">        experiment_name=<span class="string">&quot;deepseek-llm-7b-chat-lora&quot;</span>,</span><br><span class="line">        description=<span class="string">&quot;DeepSeek有很多模型，V2太大了，这里选择llm-7b-chat的，希望能让回答更加人性化&quot;</span>,</span><br><span class="line">        workspace=<span class="literal">None</span>,</span><br><span class="line">        config=swanlab_config,</span><br><span class="line">    )</span><br><span class="line">    trainer = Trainer(</span><br><span class="line">        model=model,</span><br><span class="line">        args=train_args,</span><br><span class="line">        train_dataset=train_dataset,</span><br><span class="line">        data_collator=data_collator,</span><br><span class="line">        callbacks=[swanlab_callback],</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> trainer</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理数据</span></span><br><span class="line"><span class="comment"># def process_data(data: dict, tokenizer, max_seq_length):</span></span><br><span class="line"><span class="comment">#     # 处理数据</span></span><br><span class="line"><span class="comment">#     conversation = data[&quot;conversation&quot;]</span></span><br><span class="line"><span class="comment">#     input_ids, attention_mask, labels = [], [], []</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     for i, conv in enumerate(conversation):</span></span><br><span class="line"><span class="comment">#         human_text = conv[&quot;human&quot;].strip()</span></span><br><span class="line"><span class="comment">#         assistant_text = conv[&quot;assistant&quot;].strip()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#         input_text = &quot;Human:&quot; + human_text + &quot;\n\nnAssistant:&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#         input_tokenizer = tokenizer(</span></span><br><span class="line"><span class="comment">#             input_text,</span></span><br><span class="line"><span class="comment">#             add_special_tokens=False,</span></span><br><span class="line"><span class="comment">#             truncation=True,</span></span><br><span class="line"><span class="comment">#             padding=False,</span></span><br><span class="line"><span class="comment">#             return_tensors=None,</span></span><br><span class="line"><span class="comment">#         )</span></span><br><span class="line"><span class="comment">#         output_tokenizer = tokenizer(</span></span><br><span class="line"><span class="comment">#             assistant_text,</span></span><br><span class="line"><span class="comment">#             add_special_tokens=False,</span></span><br><span class="line"><span class="comment">#             truncation=True,</span></span><br><span class="line"><span class="comment">#             padding=False,</span></span><br><span class="line"><span class="comment">#             return_tensors=None,</span></span><br><span class="line"><span class="comment">#         )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#         input_ids += (</span></span><br><span class="line"><span class="comment">#                 input_tokenizer[&quot;input_ids&quot;] + output_tokenizer[&quot;input_ids&quot;] + [tokenizer.eos_token_id]</span></span><br><span class="line"><span class="comment">#         )</span></span><br><span class="line"><span class="comment">#         attention_mask += input_tokenizer[&quot;attention_mask&quot;] + output_tokenizer[&quot;attention_mask&quot;] + [1]</span></span><br><span class="line"><span class="comment">#         labels += ([-100] * len(input_tokenizer[&quot;input_ids&quot;]) + output_tokenizer[&quot;input_ids&quot;] + [tokenizer.eos_token_id]</span></span><br><span class="line"><span class="comment">#                    )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     if len(input_ids) &gt; max_seq_length:  # 做一个截断</span></span><br><span class="line"><span class="comment">#         input_ids = input_ids[:max_seq_length]</span></span><br><span class="line"><span class="comment">#         attention_mask = attention_mask[:max_seq_length]</span></span><br><span class="line"><span class="comment">#         labels = labels[:max_seq_length]</span></span><br><span class="line"><span class="comment">#     return &#123;</span></span><br><span class="line"><span class="comment">#         &quot;input_ids&quot;: input_ids,</span></span><br><span class="line"><span class="comment">#         &quot;attention_mask&quot;: attention_mask,</span></span><br><span class="line"><span class="comment">#         &quot;labels&quot;: labels</span></span><br><span class="line"><span class="comment">#     &#125;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_data</span>(<span class="params">data: <span class="built_in">dict</span>, tokenizer, max_seq_length: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    改进后的数据处理函数，适配单轮问答格式数据集</span></span><br><span class="line"><span class="string">    输入示例结构：</span></span><br><span class="line"><span class="string">    &#123;&quot;instruction&quot;: &quot;问题&quot;, &quot;input&quot;: &quot;&quot;, &quot;output&quot;: &quot;回答&quot;, ...&#125;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 拼接输入文本（兼容指令微调格式）</span></span><br><span class="line">    prompt = data[<span class="string">&quot;instruction&quot;</span>].strip()</span><br><span class="line">    <span class="keyword">if</span> data[<span class="string">&quot;input&quot;</span>] <span class="keyword">and</span> data[<span class="string">&quot;input&quot;</span>].strip():  <span class="comment"># 如果有input字段</span></span><br><span class="line">        prompt += <span class="string">&quot;\n&quot;</span> + data[<span class="string">&quot;input&quot;</span>].strip()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 构造模型输入格式（按DeepSeek格式拼接）</span></span><br><span class="line">    input_text = <span class="string">f&quot;Human: <span class="subst">&#123;prompt&#125;</span>\n\nAssistant: &quot;</span></span><br><span class="line">    output_text = data[<span class="string">&quot;output&quot;</span>].strip() + tokenizer.eos_token  <span class="comment"># 添加结束符</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Tokenization处理</span></span><br><span class="line">    tokenized_input = tokenizer(</span><br><span class="line">        input_text,</span><br><span class="line">        add_special_tokens=<span class="literal">False</span>,  <span class="comment"># 不自动加特殊token</span></span><br><span class="line">        truncation=<span class="literal">True</span>,</span><br><span class="line">        max_length=max_seq_length,</span><br><span class="line">        return_attention_mask=<span class="literal">False</span></span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    tokenized_output = tokenizer(</span><br><span class="line">        output_text,</span><br><span class="line">        add_special_tokens=<span class="literal">False</span>,</span><br><span class="line">        truncation=<span class="literal">True</span>,</span><br><span class="line">        max_length=max_seq_length - <span class="built_in">len</span>(tokenized_input[<span class="string">&quot;input_ids&quot;</span>]),</span><br><span class="line">        return_attention_mask=<span class="literal">False</span></span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 合并input_ids并处理attention_mask/labels</span></span><br><span class="line">    input_ids = tokenized_input[<span class="string">&quot;input_ids&quot;</span>] + tokenized_output[<span class="string">&quot;input_ids&quot;</span>]</span><br><span class="line">    attention_mask = [<span class="number">1</span>] * <span class="built_in">len</span>(input_ids)</span><br><span class="line">    labels = [-<span class="number">100</span>] * <span class="built_in">len</span>(tokenized_input[<span class="string">&quot;input_ids&quot;</span>]) + tokenized_output[<span class="string">&quot;input_ids&quot;</span>]  <span class="comment"># 只计算回答部分的loss</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 统一截断处理</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(input_ids) &gt; max_seq_length:</span><br><span class="line">        input_ids = input_ids[:max_seq_length]</span><br><span class="line">        attention_mask = attention_mask[:max_seq_length]</span><br><span class="line">        labels = labels[:max_seq_length]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;input_ids&quot;</span>: input_ids,</span><br><span class="line">        <span class="string">&quot;attention_mask&quot;</span>: attention_mask,</span><br><span class="line">        <span class="string">&quot;labels&quot;</span>: labels</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练部分</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    args = configuration_parameter()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;*****************加载分词器*************************&quot;</span>)</span><br><span class="line">    <span class="comment"># 加载分词器</span></span><br><span class="line">    model_path = args.model_name_or_path</span><br><span class="line">    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=<span class="literal">True</span>, use_fast=<span class="literal">False</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;*****************处理数据*************************&quot;</span>)</span><br><span class="line">    <span class="comment"># 处理数据</span></span><br><span class="line">    <span class="comment"># 获得数据</span></span><br><span class="line">    data = pd.read_json(args.train_file, lines=<span class="literal">True</span>)</span><br><span class="line">    train_ds = Dataset.from_pandas(data)</span><br><span class="line">    train_dataset = train_ds.<span class="built_in">map</span>(process_data,</span><br><span class="line">                                 fn_kwargs=&#123;<span class="string">&quot;tokenizer&quot;</span>: tokenizer, <span class="string">&quot;max_seq_length&quot;</span>: args.max_seq_length&#125;,</span><br><span class="line">                                 remove_columns=train_ds.column_names)</span><br><span class="line">    data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, padding=<span class="literal">True</span>, return_tensors=<span class="string">&quot;pt&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(train_dataset, data_collator)</span><br><span class="line">    <span class="comment"># 加载模型</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;*****************训练*************************&quot;</span>)</span><br><span class="line">    trainer = load_model(args, train_dataset, data_collator)</span><br><span class="line">    trainer.train()</span><br><span class="line">    <span class="comment"># # 训练</span></span><br><span class="line">    final_save_path = join(args.output_dir)</span><br><span class="line">    trainer.save_model(final_save_path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>对于数据处理函数，由于使用的数据集不同，其数据集中的格式也有所不同，所以需要修改其数据处理函数能够正确处理数据集为标准输入，关于数据处理函数的修改可交给大模型帮助完成。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">单进程训练</span></span><br><span class="line">python train.py --distributed False</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分布式训练</span></span><br><span class="line">torchrun --nproc_per_node=8 train.py</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="模型合并代码"><a href="#模型合并代码" class="headerlink" title="模型合并代码"></a>模型合并代码</h2><p>进行推理之前需要先将微调生成的模型与原模型进行合并，以下是合并模型代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> peft <span class="keyword">import</span> PeftModel</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoModelForCausalLM</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> modelscope <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"><span class="keyword">import</span> shutil</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保证原始模型的各个文件不遗漏保存到merge_path中</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">copy_files_not_in_B</span>(<span class="params">A_path, B_path</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Copies files from directory A to directory B if they exist in A but not in B.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param A_path: Path to the source directory (A).</span></span><br><span class="line"><span class="string">    :param B_path: Path to the destination directory (B).</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 保证路径存在</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(A_path):</span><br><span class="line">        <span class="keyword">raise</span> FileNotFoundError(<span class="string">f&quot;The directory <span class="subst">&#123;A_path&#125;</span> does not exist.&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(B_path):</span><br><span class="line">        os.makedirs(B_path)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取路径A中所有非权重文件</span></span><br><span class="line">    files_in_A = os.listdir(A_path)</span><br><span class="line">    files_in_A = <span class="built_in">set</span>([file <span class="keyword">for</span> file <span class="keyword">in</span> files_in_A <span class="keyword">if</span> <span class="keyword">not</span> (<span class="string">&quot;.bin&quot;</span> <span class="keyword">in</span> file <span class="keyword">or</span> <span class="string">&quot;safetensors&quot;</span> <span class="keyword">in</span> file)])</span><br><span class="line">    <span class="comment"># List all files in directory B</span></span><br><span class="line">    files_in_B = <span class="built_in">set</span>(os.listdir(B_path))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 找到所有A中存在但B中不存在的文件</span></span><br><span class="line">    files_to_copy = files_in_A - files_in_B</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将文件或文件夹复制到B路径下</span></span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files_to_copy:</span><br><span class="line">        src_path = os.path.join(A_path, file)</span><br><span class="line">        dst_path = os.path.join(B_path, file)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> os.path.isdir(src_path):</span><br><span class="line">            <span class="comment"># 复制目录及其内容</span></span><br><span class="line">            shutil.copytree(src_path, dst_path)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 复制文件</span></span><br><span class="line">            shutil.copy2(src_path, dst_path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">merge_lora_to_base_model</span>():</span><br><span class="line">    model_name_or_path = <span class="string">&#x27;./deepseek-llm-7b-chat&#x27;</span>  <span class="comment"># 原模型地址</span></span><br><span class="line">    adapter_name_or_path = <span class="string">&#x27;./deepseek-train-output/ruozhiba&#x27;</span>  <span class="comment"># 微调后模型的保存地址</span></span><br><span class="line">    save_path = <span class="string">&#x27;./deepseek-merge-output/ruozhiba&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果文件夹不存在，就创建</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(save_path):</span><br><span class="line">        os.makedirs(save_path)</span><br><span class="line">    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,trust_remote_code=<span class="literal">True</span>,)</span><br><span class="line"></span><br><span class="line">    model = AutoModelForCausalLM.from_pretrained(</span><br><span class="line">        model_name_or_path,</span><br><span class="line">        trust_remote_code=<span class="literal">True</span>,</span><br><span class="line">        low_cpu_mem_usage=<span class="literal">True</span>,</span><br><span class="line">        torch_dtype=torch.float16,</span><br><span class="line">        device_map=<span class="string">&quot;auto&quot;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># 加载保存的 Adapter</span></span><br><span class="line">    model = PeftModel.from_pretrained(model, adapter_name_or_path, device_map=<span class="string">&quot;auto&quot;</span>,trust_remote_code=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 将 Adapter 合并到基础模型中</span></span><br><span class="line">    merged_model = model.merge_and_unload()  <span class="comment"># PEFT 的方法将 Adapter 权重合并到基础模型</span></span><br><span class="line">    <span class="comment"># 保存合并后的模型</span></span><br><span class="line">    tokenizer.save_pretrained(save_path)</span><br><span class="line">    merged_model.save_pretrained(save_path, safe_serialization=<span class="literal">False</span>)</span><br><span class="line">    copy_files_not_in_B(model_name_or_path, save_path)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;合并后的模型已保存至: <span class="subst">&#123;save_path&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    merge_lora_to_base_model()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="推理代码"><a href="#推理代码" class="headerlink" title="推理代码"></a>推理代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> os.path <span class="keyword">import</span> join</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> Dataset</span><br><span class="line"><span class="keyword">from</span> loguru <span class="keyword">import</span> logger</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> (</span><br><span class="line">    TrainingArguments,</span><br><span class="line">    AutoModelForCausalLM,</span><br><span class="line">    Trainer,</span><br><span class="line">    DataCollatorForSeq2Seq,</span><br><span class="line">    AutoTokenizer,</span><br><span class="line">    GenerationConfig,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> peft <span class="keyword">import</span> LoraConfig, get_peft_model, TaskType</span><br><span class="line"><span class="keyword">from</span> swanlab.integration.transformers <span class="keyword">import</span> SwanLabCallback</span><br><span class="line"><span class="keyword">import</span> bitsandbytes <span class="keyword">as</span> bnb</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.nn.parallel <span class="keyword">import</span> DistributedDataParallel <span class="keyword">as</span> DDP</span><br><span class="line"><span class="keyword">import</span> torch.distributed <span class="keyword">as</span> dist</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">original_model_reasoning</span>(<span class="params">model_path: <span class="built_in">str</span>, prompt: <span class="built_in">str</span>, max_new_tokens=<span class="number">2048</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    单论对话的回复</span></span><br><span class="line"><span class="string">    :param model_path: 模型下载地址</span></span><br><span class="line"><span class="string">    :param prompt: 需要询问的问题</span></span><br><span class="line"><span class="string">    :return: 回复的话</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 加载模型和分词器</span></span><br><span class="line">    model_path = model_path</span><br><span class="line">    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=<span class="literal">True</span>)</span><br><span class="line">    model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.bfloat16, trust_remote_code=<span class="literal">True</span>,</span><br><span class="line">                                                 device_map=<span class="string">&quot;auto&quot;</span>)</span><br><span class="line"></span><br><span class="line">    model.generation_config = GenerationConfig.from_pretrained(model_path)</span><br><span class="line">    model.generation_config.pad_token_id = model.generation_config.eos_token_id</span><br><span class="line"></span><br><span class="line">    messages = [</span><br><span class="line">        &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">         <span class="string">&quot;content&quot;</span>: prompt&#125;</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    input_tensor = tokenizer.apply_chat_template(messages, add_generation_prompt=<span class="literal">True</span>, return_tensors=<span class="string">&quot;pt&quot;</span>)</span><br><span class="line">    outputs = model.generate(input_tensor.to(model.device), max_new_tokens=max_new_tokens)</span><br><span class="line"></span><br><span class="line">    result = tokenizer.decode(outputs[<span class="number">0</span>][input_tensor.shape[<span class="number">1</span>]:], skip_special_tokens=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义模型路径（可以是本地路径或 Hugging Face 模型库地址）</span></span><br><span class="line">model_path = <span class="string">&quot;./deepseek-llm-7b-chat&quot;</span></span><br><span class="line"><span class="comment"># model_path = &quot;./deepseek-merge-output/ruozhiba&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义输入 prompt</span></span><br><span class="line">prompt = <span class="string">&quot;假如阎王叫我三更死，但是我一更就死了，那三更是不是死不了了?&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">response = original_model_reasoning(model_path, prompt)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Model Response:&quot;</span>, response)</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">&quot;假如阎王叫我三更死，但是我一更就死了，那三更是不是死不了了?&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据库中的答案</span></span><br><span class="line">&#123;<span class="string">&quot;instruction&quot;</span>: <span class="string">&quot;假如阎王叫我三更死，但是我一更就死了，那三更是不是死不了了&quot;</span>, <span class="string">&quot;input&quot;</span>: <span class="string">&quot;&quot;</span>, <span class="string">&quot;output&quot;</span>: <span class="string">&quot;这是一个玩笑谐音，是基于语言的双关意义和语言游戏的幽默。\n\n三更是指深夜三点，而\&quot;三更死\&quot;在这里指的是阎王在深夜三点叫人去死。但是在这个玩笑中，你根据阎王的命令，在还没到第三个“更”之前就已经死了。\n\n因此，这个玩笑在于从语言上制造了一个矛盾和出人意料的情况。它并没有实际意义或科学解释，只是一种文字游戏和幽默方式。&quot;</span>, <span class="string">&quot;task_type&quot;</span>: &#123;<span class="string">&quot;major&quot;</span>: [<span class="string">&quot;问答&quot;</span>], <span class="string">&quot;minor&quot;</span>: [<span class="string">&quot;逻辑问答&quot;</span>, <span class="string">&quot;隐喻理解&quot;</span>]&#125;, <span class="string">&quot;domain&quot;</span>: [<span class="string">&quot;通用&quot;</span>], <span class="string">&quot;metadata&quot;</span>: <span class="string">&quot;暂无元数据信息&quot;</span>, <span class="string">&quot;answer_from&quot;</span>: <span class="string">&quot;llm&quot;</span>, <span class="string">&quot;human_verified&quot;</span>: true, <span class="string">&quot;copyright&quot;</span>: <span class="string">&quot;暂无版权及作者信息&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 原模型三次回答</span></span><br><span class="line">一、</span><br><span class="line">Model Response: 这个问题是基于一个假设的情景，在现实生活中并不存在阎王或者死亡时间可以预定的概念。在中国的传统信仰中，阎王是管理阴间生死的神，但这种信仰并不属于科学的范畴。</span><br><span class="line"></span><br><span class="line">如果将这个问题看作是一个哲学或者逻辑思考的练习，那么答案可能是这样的：如果一个人在阎王预定的“三更死”之前就死了，那么可能有两种解释：</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> 可能阎王预定的死亡时间是一个大概的范围，而不是精确的时间。</span><br><span class="line"><span class="number">2.</span> 也可能是因为某种未知的原因，这个人提前离开了这个世界，而这种提前并不影响阎王预定的死亡时间。</span><br><span class="line"></span><br><span class="line">然而，这些都是假设性的解释，并没有科学依据。在现实生活中，死亡是一个自然的过程，通常是由多种因素决定的，包括健康状况、生活方式、环境因素等。</span><br><span class="line"></span><br><span class="line">二、</span><br><span class="line">Model Response: 这个问题是基于一个假设的情景，实际上并不存在阎王或者死亡的时刻可以被预知。在中国文化中，阎王被认为是掌管地狱的神仙，负责决定人的生死。但是，生死是由多种因素决定的，包括人的行为、健康状况、环境等，不是由阎王或者任何神灵单方面决定的。</span><br><span class="line"></span><br><span class="line">如果一个人原本被预定为三更死，但实际上在更早的时候死亡，这并不意味着阎王无法再让他在三更时死亡。死亡的时间是无法准确预测的，而且每个人的生命都有其自然的周期。</span><br><span class="line"></span><br><span class="line">因此，这个问题更多的是一个哲学或文化上的探讨，而不是基于现实世界中的实际情况。在现实生活中，我们无法控制自己的死亡时间，只能尽量享受每一天并尽可能地做出积极的生活选择。</span><br><span class="line"></span><br><span class="line">三、</span><br><span class="line">Model Response: 这个问题是基于一个虚构的情景，阎王决定某人在三更死亡，但实际在更早的时间就去世了。在现实生活中，我们无法预知或控制死亡的时间，因为死亡是一个自然过程，受到许多因素的影响，如健康状况、外部环境等。因此，无法确定三更是否因为早于阎王所计划的死亡时间而变得不再适用。</span><br><span class="line"></span><br><span class="line">在宗教或民间传说中，阎王或类似的概念通常被视为掌管生死的神灵。但在现实世界中，没有人能控制或改变死亡的时间。所以，如果一个人在预期的时间之前死亡，这并不意味着阎王的能力或决定受到影响。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 微调模型三次输出</span></span><br><span class="line">一、</span><br><span class="line">Model Response: 这是一个玩笑谐音，是基于语言的双关意义和语言游戏的幽默。</span><br><span class="line"></span><br><span class="line">三更是指深夜三点，而<span class="string">&quot;三更死&quot;</span>在这里指的是阎王在深夜三点叫人去死。但是在这个玩笑中，你根据阎王的命令，在还没到第三个“更”之前就已经死了。</span><br><span class="line"></span><br><span class="line">因此，这个玩笑在于从语言上制造了一个矛盾和出人意料的情况。它并没有实际意义或科学解释，只是一种文字游戏和幽默方式。</span><br><span class="line"></span><br><span class="line">二、</span><br><span class="line">Model Response: 这是一个玩笑谐音，是基于语言的双关意义和语言游戏的幽默。</span><br><span class="line"></span><br><span class="line">三更是指深夜三点，而<span class="string">&quot;三更死&quot;</span>在这里指的是阎王在深夜三点叫人去死。但是在这个玩笑中，你根据阎王的命令，在还没到第三个“更”之前就已经死了。</span><br><span class="line"></span><br><span class="line">因此，这个玩笑在于从语言上制造了一个矛盾和出人意料的情况。它并没有实际意义或科学解释，只是一种文字游戏和幽默方式。</span><br><span class="line"></span><br><span class="line">三、</span><br><span class="line">Model Response: 这是一个玩笑谐音，是基于语言的双关意义和语言游戏的幽默。<span class="string">&quot;三更死&quot;</span>指的是在第三个小时后死亡，而<span class="string">&quot;一更死&quot;</span>则是指在第一个小时就死亡。这种情况下，三更是否能死不了了？从字面上来看，由于你在第一个小时就死了，所以三更死亡显然是不成立的。</span><br><span class="line"></span><br><span class="line">这个玩笑在于从语言上制造了一个矛盾和出人意料的情况。它并没有实际意义或科学解释，只是一种文字游戏和幽默方式。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      </div>
+    </div>
+</div>
+
+
+<div class="post-footer">
+  
+
+  <div class="post-copyright">
+    <p style="margin: 5px 0;">文章作者：<a href="/">EntoryString</a></p>
+    <p style="margin: 5px 0;">文章链接：<a href="https://yipenguin.github.io/EntropySpring/2025/05/28/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">https://yipenguin.github.io/EntropySpring/2025/05/28/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</a></p>
+    <p style="margin: 5px 0;">版权声明：本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处，谢谢。</p>
+  </div>
+  
+</div>
+
+    <!-- Comments -->
+    <div class="comments">
+        
+        <!-- Detalk.js https://detalk.js.org/ -->
+
+    <div id="miracle-comments">
+        <div id="detalk">
+            <div style="width: 100%; text-align: center; display: flex; justify-content: center; align-items: center;">
+                <svg width="30px" height="30px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><g><animateTransform attributeName="transform" type="rotate" values="0 33 33;270 33 33" begin="0s" dur="1.4s" fill="freeze" repeatCount="indefinite"></animateTransform>
+                    <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30" stroke-dasharray="187" stroke-dashoffset="610"><animate attributeName="stroke" values="#4285F4;#DE3E35;#F7C223;#1B9A59;#4285F4" begin="0s" dur="5.6s" fill="freeze" repeatCount="indefinite"></animate><animateTransform attributeName="transform" type="rotate" values="0 33 33;135 33 33;450 33 33" begin="0s" dur="1.4s" fill="freeze" repeatCount="indefinite"></animateTransform><animate attributeName="stroke-dashoffset" values="187;46.75;187" begin="0s" dur="1.4s" fill="freeze" repeatCount="indefinite"></animate>
+                </circle></g></svg>
+            </div>
+        </div>
+    </div>
+    <style>
+        .comment-title h3 {
+            font-size: 1.25rem;
+        }
+        .detalk-container .input-label label {
+            width: 30% !important;
+        }
+        .detalk-container .input-data .input-area input {
+            width: 70% !important;
+        }
+    </style>
+    <script>
+        function loadComment() {
+            try {
+                loadScriptFile({
+                    url: "https://cdn.jsdelivr.net/npm/@detalk/static@1.3.1/dist/detalk.js",
+                    loadType: "async",
+                    cb: () => {
+                        detalk.init({"url":"","el":"#detalk","label":{"admin":{"name":"博主","class":"label-green"}},"recaptchaSiteKey":null,"login":{"github":null},"owo":null});
+                    },
+                });
+            } catch (e) {
+                document.getElementById("loadCommentBtn").innerText = "无法加载 Detalk.js 评论";
+                console.info(e);
+            }
+        }
+        function loadDetalk() {
+            try {
+                loadComment();
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        var runningOnBrowser = typeof window !== "undefined";
+
+        var isBot = runningOnBrowser && !("onscroll" in window) || typeof navigator !== "undefined" && /(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent);
+
+        var supportsIntersectionObserver = runningOnBrowser && "IntersectionObserver" in window;
+
+        setTimeout(function () {
+            if (!isBot && supportsIntersectionObserver) {
+                var observer = new IntersectionObserver(function(entries) {
+                if (entries[0].isIntersecting) {
+                    loadDetalk();
+                    observer.disconnect();
+                }
+                }, { threshold: [0] });
+                observer.observe(document.getElementById('miracle-comments'));
+            } else {
+                loadDetalk();
+            }
+        }, 1);
+    </script>
+
+
+    </div>
+
+</article>
+
+
+        </div>
+        
+<footer class="text-center">
+    
+    
+    
+    
+    
+    <p>&copy;  2020 - 2021&nbsp;&nbsp;Theme Miracle</p>
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme by <a href="https://github.com/oCoke/hexo-theme-miracle" target="_blank">Miracle</a></p>
+    
+    
+</footer>
+
+<div class="p-btn">
+    
+        <a class="toc-btn" id="toc-btn"><i id="i-menu"></i></a>
+    
+    
+      <a class="toc-btn" id="share-btn"><i>
+        <svg t="1670124379155" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2683" width="25" height="25"><path d="M395.946667 234.666667v64H256v469.333333h512V522.666667h64V768a64 64 0 0 1-64 64H256a64 64 0 0 1-64-64V298.666667a64 64 0 0 1 64-64h139.946667z m335.850666-87.914667l150.848 150.826667-158.378666 158.4-45.269334-45.248L748.394667 341.333333H672c-121.685333 0-220.714667 97.024-223.914667 217.941334L448 565.333333v85.333334h-64v-85.333334C384 406.272 512.938667 277.333333 672 277.333333h99.861333l-85.312-85.333333 45.248-45.248z" p-id="2684" fill="var(--first-text-color)"></path></svg>
+      </i></a>
+    
+    <a href="javascript:window.scrollTo({top:0,behavior:'smooth'});" class="click-btn">
+      <i id="i-up"></i>
+    </a>
+</div>
+
+<!-- SCRIPTS -->
+
+
+
+
+
+
+<script>
+    document.getElementById("btn-dropdown").addEventListener('click', () => {
+      toggleClass("#dropdown-menus","display-inline");
+    });
+    console.log('\n' + ' %c Powered by Hexo Theme Miracle ' + ' %c https://github.com/oCoke/hexo-theme-miracle ' + '\n' + '\n', 'color: #fff; background: #4F9BFA; padding:5px 0;', 'background: #FFF; padding:5px 0;');
+
+    
+
+    
+  /* 小彩蛋: 饮茶先啦 */
+  setTimeout(() => {
+    var time = new Date();
+    if (time.getHours() == 15) {
+      let comment = document.createComment(' 三点几嚟！饮茶先啦！ ');
+      document.body.insertBefore(comment, document.getElementsByTagName('header')[0]);
+    }
+  },1);
+    
+</script>
+
+
+<script>
+    var postImg = document.querySelectorAll("article[class=page] img");
+    for (let imgi = 0; imgi < postImg.length; imgi++) {
+        postImg[imgi].onclick = () => {
+            let zoomImg = document.createElement("div");
+            zoomImg.id = "zoomImg";
+            zoomImg.innerHTML = `<div id="zoom-picture"></div>
+    <div class="poptrox-overlay"
+        style="position: fixed; left: 0px; top: 0px; z-index: 20000; width: 100%; height: 100%; text-align: center; cursor: zoom-out; opacity: 1;">
+        <div style="display:inline-block;height:100%;vertical-align:middle;"></div>
+        <div
+            style="position:absolute;left:0;top:0;width:100%;height:100%;background:#000000;opacity:0;filter:alpha(opacity=0);">
+        </div>
+        <div class="poptrox-popup"
+            style="display: inline-block; vertical-align: middle; position: relative; z-index: 1; cursor: zoom-out; min-width: 10px; min-height: 10px; width: auto; height: auto;">
+            <div class="loader" style="display: none;"></div>
+            <div class="pic" style="text-indent: 0px;"><img
+                    src="${ postImg[imgi].srcset || postImg[imgi].src }" alt="Loading..."
+                    style="vertical-align: bottom; max-width: 85vw; max-height: 85vh;"></div>
+        </div>
+    </div>`;
+            document.body.appendChild(zoomImg);
+                document.querySelector("#zoomImg").onclick = () => {
+                    document.querySelector("#zoomImg").remove();
+                }
+        }
+    }
+    
+</script>
+
+
+
+
+    <script>
+        query("#toc-btn")[0].onclick = () => {
+            if (query(".post-toc")[0].innerHTML) {
+                toggleClass(".post-toc", "display-inline");
+            }
+        }
+
+        if (!query(".post-toc")[0].innerHTML) {
+            addClass("#toc-btn","display-none");
+        }
+    </script>
+
+
+
+    <script>
+        query("#share-btn")[0].onclick = async () => {
+            let url = `${location.protocol}//${location.hostname}${location.port ? ":"+location.port:location.port}${location.pathname}#read=${sessionStorage.getItem(location.pathname+"_read_y") || ""}`;
+            try {
+                await navigator.clipboard.writeText(url);
+                prompt_core("分享链接已经复制至剪贴板", 4800, true);
+            } catch(e) {
+                prompt_core("分享链接复制失败，请手动复制<br/>"+url, 4800, false);
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+    <script>
+        const getScrollPosition = (el = window) => ({
+            x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
+            y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop
+        });
+        // 此处的 750 是「页面元素的最大宽度」
+        var wx = document.getElementsByClassName("article-m")[0].clientWidth;
+        var wy = document.getElementsByClassName("article-m")[0].clientHeight;
+        function windowScroll() {
+            // 反复修改 确保页面尺寸不改变
+            wx = document.getElementsByClassName("article-m")[0].clientWidth;
+            wy = document.getElementsByClassName("article-m")[0].clientHeight;
+            let y = Math.round(getScrollPosition().y);
+            // console.log(y);
+            // 组合字符串，同时记录页面坐标，页面宽度和高度
+            let p = `${y}:${wx}:${wy}`;
+            // 写入到 sessionStorage 中
+            sessionStorage.setItem(location.pathname + "_read_y", p);
+        }
+        // URL 中是否包含传递的坐标信息
+        setTimeout(() => {
+            if (location.hash.split("#read=").length > 1) {
+                prompt_core("已有阅读进度，正在跳转", 4800, true);
+                // 分离字符串
+                let read_y = location.hash.split("#read=")[1];
+                read_y = read_y.split(":");
+                // 组合乘积，顺滑移动至坐标
+                window.scrollTo({top: Math.round(Number(read_y[0]) * Number(read_y[1] * Number(read_y[2] / wx / wy))), behavior: "smooth"});
+            } else {
+                // 从 sessionStorage 中获取
+                let read_y = sessionStorage.getItem(location.pathname + "_read_y") || "0:0:0";
+                read_y = read_y.split(":");
+                if (read_y[0] != "0") prompt_core("已有阅读进度，正在跳转", 4800, true);
+                window.scrollTo({top: Math.round(Number(read_y[0]) * Number(read_y[1] * Number(read_y[2] / wx / wy))), behavior: "smooth"});
+            }
+        }, 500);
+        window.onscroll = windowScroll;
+    </script>
+
+
+
+
+
+        </div>
+        <div id="css-loading">
+            <h3 class="text-center">加载中...</h3>
+        </div>
+        
+    </body>
+</html>
