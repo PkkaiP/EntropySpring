@@ -482,30 +482,30 @@ header .header__right .dropdown-menus .dropdown-menu {
 <h3 id="LLM作为奖励设计者"><a href="#LLM作为奖励设计者" class="headerlink" title="LLM作为奖励设计者"></a>LLM作为奖励设计者</h3><p>在复杂或无法量化的任务中，大模型利用知识和推理能力设计复杂奖励函数和生成奖励信号。</p>
 <h3 id="LLM作为决策者"><a href="#LLM作为决策者" class="headerlink" title="LLM作为决策者"></a>LLM作为决策者</h3><p>大模型直接生成动作或间接生成动作建议，提高强化学习探索效率。</p>
 <h3 id="LLM作为生成者"><a href="#LLM作为生成者" class="headerlink" title="LLM作为生成者"></a>LLM作为生成者</h3><p>大模型被用于：（1）作为高保真多模态世界模型减少现实世界学习成本及（2）生成代理行为的自然语言解释。</p>
-<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250106161452148.png" alt="image-20250106161452148"></p>
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250106161305016.png" alt="image-20250106161305016"></p>
+<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250106161452148.png" alt="image-20250106161452148"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250106161305016.png" alt="image-20250106161305016"></p>
 <p>DQN流程：</p>
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250106230821747.png" alt="image-20250106230821747"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250106230821747.png" alt="image-20250106230821747"></p>
 <h1 id="Deepseek微调-SFT"><a href="#Deepseek微调-SFT" class="headerlink" title="Deepseek微调(SFT)"></a>Deepseek微调(SFT)</h1><p>参考网站：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shanren/p/18719435">https://www.cnblogs.com/shanren/p/18719435</a></p>
 <h2 id="conda环境配置"><a href="#conda环境配置" class="headerlink" title="conda环境配置"></a>conda环境配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">conda create -n deepseek python=3.10</span><br><span class="line">conda activate deepseek</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118</span></span><br><span class="line">conda install pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia</span><br><span class="line">pip install transformers==4.38.2 accelerate peft bitsandbytes swanlab pandas loguru datasets</span><br></pre></td></tr></table></figure>
 
-<h3 id="报错与解决"><a href="#报错与解决" class="headerlink" title="报错与解决"></a>报错与解决</h3><p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319184255358.png" alt="image-20250319184255358"></p>
+<h3 id="报错与解决"><a href="#报错与解决" class="headerlink" title="报错与解决"></a>报错与解决</h3><p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319184255358.png" alt="image-20250319184255358"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install numpy==<span class="number">1.26</span><span class="number">.4</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319184638435.png" alt="image-20250319184638435"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319184638435.png" alt="image-20250319184638435"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install peft==<span class="number">0.10</span><span class="number">.0</span> transformers==<span class="number">4.37</span><span class="number">.2</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319192108812.png" alt="image-20250319192108812"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319192108812.png" alt="image-20250319192108812"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip uninstall Pillow</span><br></pre></td></tr></table></figure>
 
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319192139847.png" alt="image-20250319192139847"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319192139847.png" alt="image-20250319192139847"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install accelerate==<span class="number">0.28</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319192307670.png" alt="image-20250319192307670"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319192307670.png" alt="image-20250319192307670"></p>
 <p>在运行之前可以先进行swanlab的安装，详细见<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45258632/article/details/144971398">blog</a></p>
 <h2 id="deepseek预训练模型下载"><a href="#deepseek预训练模型下载" class="headerlink" title="deepseek预训练模型下载"></a>deepseek预训练模型下载</h2><p>预训练采用deepseek-llm-7b-chat，huggingface<a target="_blank" rel="noopener" href="https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat/tree/main">地址</a></p>
 <p>其中，需要用到git lfs，在centos 8服务器上的安装方式无法采用命令行安装，可以下载源代码安装，首先从git lfs的github仓库中选择下载</p>
-<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20250319171519268.png" alt="image-20250319171519268"></p>
+<p><img src="/EntropySpring/EntropySpring/2025/05/31/test/image-20250319171519268.png" alt="image-20250319171519268"></p>
 <p>通过在服务器命令行中输入<code>uname -m</code>查询系统架构<code>x86_64</code>，选择Linux AMD64版本进行下载，解压完成后进入文件夹，执行<code>sudo ./install.sh</code>即可，验证是否成功安装可以使用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[pengyi@localhost ~]$ git lfs install</span><br><span class="line">Git LFS initialized.</span><br></pre></td></tr></table></figure>
 
